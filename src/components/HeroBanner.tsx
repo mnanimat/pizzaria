@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Pizza, ShieldCheck, Flame, ArrowRight, Percent, Truck } from 'lucide-react';
+import { Sparkles, Pizza, ShieldCheck, Flame, ArrowRight, Percent, Truck, Calendar } from 'lucide-react';
 
 interface HeroBannerProps {
   onOpenCustomBuilder: () => void;
@@ -25,9 +25,15 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
           
           {/* Main Hero Callout */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-300 px-3.5 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm">
-              <Flame className="w-4 h-4 text-amber-400" />
-              <span>Pizzas Artesanais Assadas no Forno a Lenha</span>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+              <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-300 px-3.5 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <Flame className="w-4 h-4 text-amber-400 animate-pulse" />
+                <span>Pizzas Artesanais Assadas no Forno a Lenha</span>
+              </div>
+              <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Opção de Agendar Pedido</span>
+              </div>
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black text-white leading-tight tracking-tight font-serif">
@@ -35,7 +41,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             </h1>
 
             <p className="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
-              Monte sua pizza personalizada em segundos! Escolha tamanho, combine até 3 sabores, selecione borda de Catupiry ou Nutella e receba quentinha na sua casa. Pedido enviado direto pelo <strong>WhatsApp</strong>.
+              Monte sua pizza personalizada em segundos ou peça a entrega imediata ou <strong>agendada para o horário que preferir</strong>! Pedido enviado direto para o <strong>WhatsApp</strong>.
             </p>
 
             {/* CTAs */}

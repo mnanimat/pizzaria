@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, Clock, MapPin, Flame, Sparkles, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, Clock, MapPin, Flame, Sparkles, Sun, Moon, Calendar } from 'lucide-react';
 import { PIZZERIA_INFO } from '../data/pizzaData';
 
 interface HeaderProps {
@@ -33,8 +33,12 @@ export const Header: React.FC<HeaderProps> = ({
           <Flame className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
           Forno a Lenha Aceso
         </span>
-        <span>• Entrega rápida em {PIZZERIA_INFO.estimatedTime}</span>
-        <span className="hidden md:inline">• Use o cupom <strong className="bg-amber-300 text-slate-950 px-1 rounded font-bold">PRIMEIRO10</strong> para 10% OFF!</span>
+        <span className="inline-flex items-center gap-1 bg-black/20 px-2 py-0.5 rounded-full text-amber-100">
+          <Calendar className="w-3.5 h-3.5 text-amber-300" />
+          Agendamento Disponível
+        </span>
+        <span>• Entrega em {PIZZERIA_INFO.estimatedTime}</span>
+        <span className="hidden md:inline">• Cupom <strong className="bg-amber-300 text-slate-950 px-1 rounded font-bold">PRIMEIRO10</strong> (10% OFF)</span>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">

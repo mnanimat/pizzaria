@@ -31,6 +31,12 @@ export function generateWhatsAppMessage(payload: WhatsAppOrderPayload): string {
   msg += `• *Telefone:* ${customer.phone}\n`;
   msg += `• *Tipo:* ${customer.deliveryType === 'delivery' ? '🚚 Entrega em Domicílio' : '🏪 Retirada na Loja'}\n`;
 
+  if (customer.isScheduled && customer.scheduledDate && customer.scheduledTime) {
+    msg += `• *Horário:* 🕒 AGENDADO para ${customer.scheduledDate} às ${customer.scheduledTime}\n`;
+  } else {
+    msg += `• *Horário:* ⚡ Entrega Imediata (o mais rápido possível)\n`;
+  }
+
   if (customer.deliveryType === 'delivery') {
     msg += `• *Endereço:* ${customer.street}, Nº ${customer.number}\n`;
     msg += `• *Bairro:* ${customer.neighborhood}\n`;
@@ -125,7 +131,11 @@ export function generateWhatsAppMessage(payload: WhatsAppOrderPayload): string {
   }
 
   msg += `\n-----------------------------------\n`;
-  msg += `⏳ *Tempo Estimado:* ${PIZZERIA_INFO.estimatedTime}\n`;
+  if (customer.isScheduled && customer.scheduledDate && customer.scheduledTime) {
+    msg += `⏳ *Status:* 📅 Pedido Agendado (${customer.scheduledDate} às ${customer.scheduledTime})\n`;
+  } else {
+    msg += `⏳ *Tempo Estimado:* ${PIZZERIA_INFO.estimatedTime}\n`;
+  }
   msg += `Obrigado por escolher a ${PIZZERIA_INFO.name}! 🍕❤️`;
 
   return msg;

@@ -101,6 +101,9 @@ export interface CustomerDetails {
   paymentMethod: PaymentMethod;
   changeFor?: string; // If cash payment
   notes?: string;
+  isScheduled?: boolean;
+  scheduledDate?: string;
+  scheduledTime?: string;
 }
 
 export interface Coupon {
