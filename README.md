@@ -17,6 +17,12 @@ Sistema completo e moderno de cardápio digital e montagem de pedidos de pizzari
 - **🏷️ Cupons de Desconto e Combos:** Sistema de cupons promocionais ativáveis com desconto automático no carrinho.
 - **🛒 Carrinho em Tempo Real:** Cálculo de taxa de entrega, subtotal, cupom e resumo visual dos itens.
 - **📲 Integração Direta com WhatsApp:** Gerador de mensagens totalmente formatadas com opção de edição da mensagem antes do envio para o número do proprietário (**Micael Nildo: (75) 98232-1124**).
+- **🛡️ Sistema de Blindagem & Segurança Cloudflare Pages:**
+  - **Limitação de Pedidos (Rate Limiter):** Intervalo mínimo obrigatório entre pedidos (45s), limite de 3 pedidos a cada 10 minutos por dispositivo e teto diário de 10 pedidos para evitar ataques de estouro e sobrecarga.
+  - **Filtro Anti-Bot (Honeypot):** Campo de captura invisível para neutralizar robôs e scripts automatizados de spam.
+  - **Sanitização de Dados:** Proteção contra injeção de scripts (XSS) e limite de caracteres nos campos de formulário.
+  - **Headers de Segurança HTTP (`_headers` Cloudflare Pages):** Content Security Policy (CSP), X-Frame-Options, X-Content-Type-Options, Referrer-Policy e HSTS ativados.
+  - **Isolamento de Falhas (Error Boundary):** Captura e isolamento de exceções em tempo de execução para evitar tela branca ou travamento do app.
 - **🌙 Modo Claro / Escuro (Dark Mode):** Alternância fluida de temas.
 
 ---

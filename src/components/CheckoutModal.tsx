@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { X, Truck, Store, CreditCard, QrCode, Banknote, User, Phone, MapPin, Send, MessageSquare, AlertCircle, Calendar, Clock, Zap } from 'lucide-react';
+import { X, Truck, Store, CreditCard, QrCode, Banknote, User, Phone, MapPin, Send, MessageSquare, AlertCircle, Calendar, Clock, Zap, ShieldCheck, Lock } from 'lucide-react';
 import { CartItem, CustomerDetails, DeliveryType, PaymentMethod, Coupon } from '../types';
 import { PIZZERIA_INFO } from '../data/pizzaData';
 import { generateWhatsAppMessage, buildWhatsAppUrl, formatCurrency } from '../utils/whatsapp';
+import { checkOrderRateLimit, recordOrderPlaced, sanitizeText, isBotSubmission, getSecurityMetrics } from '../utils/security';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -39,6 +40,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [changeFor, setChangeFor] = useState('');
   const [notes, setNotes] = useState('');
   const [formError, setFormError] = useState('');
+  const [honeypot, setHoneypot] = useState(''); // Anti-bot trap field
+
+  const securityMetrics = getSecurityMetrics();
 
   // Calculate Prices
   const subtotal = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
@@ -76,6 +80,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     e.preventDefault();
     setFormError('');
 
+    // 1. Anti-bot honeypot check
+    if (isBotSubmission(honeypot)) {
+      setFormError('Ação bloqueada pelo filtro de segurança anti-bot.');
+      return;
+    }
+
+    // 2. Anti-spam Rate Limiting check
+    const rateLimitCheck = checkOrderRateLimit();
+    if (!rateLimitCheck.allowed) {
+      setFormError(rateLimitCheck.reason || 'Limite de segurança atingido. Aguarde antes de enviar outro pedido.');
+      return;
+    }
+
+    // 3. Basic validation
     if (!name.trim()) {
       setFormError('Por favor, informe seu nome completo.');
       return;
@@ -103,20 +121,30 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
     }
 
+    // 4. Sanitize inputs against script injection & overflow
+    const cleanName = sanitizeText(name, 80);
+    const cleanPhone = sanitizeText(phone, 30);
+    const cleanStreet = sanitizeText(street, 120);
+    const cleanNumber = sanitizeText(number, 20);
+    const cleanNeighborhood = sanitizeText(neighborhood, 80);
+    const cleanComplement = sanitizeText(complement, 100);
+    const cleanReference = sanitizeText(referencePoint, 100);
+    const cleanNotes = sanitizeText(notes, 200);
+
     const orderId = `${Math.floor(1000 + Math.random() * 9000)}`;
 
     const customerDetails: CustomerDetails = {
-      name,
-      phone,
+      name: cleanName,
+      phone: cleanPhone,
       deliveryType,
-      street,
-      number,
-      neighborhood,
-      complement,
-      referencePoint,
+      street: cleanStreet,
+      number: cleanNumber,
+      neighborhood: cleanNeighborhood,
+      complement: cleanComplement,
+      referencePoint: cleanReference,
       paymentMethod,
       changeFor,
-      notes,
+      notes: cleanNotes,
       isScheduled: orderTiming === 'scheduled',
       scheduledDate: orderTiming === 'scheduled' ? getFormattedScheduledDate() : undefined,
       scheduledTime: orderTiming === 'scheduled' ? scheduledTime : undefined,
@@ -134,6 +162,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     });
 
     const whatsappUrl = buildWhatsAppUrl(PIZZERIA_INFO.whatsappNumber, formattedMessage);
+
+    // Record rate limit attempt
+    recordOrderPlaced();
 
     onOrderCompleted(formattedMessage, whatsappUrl, orderId);
   };
@@ -533,6 +564,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             )}
           </div>
 
+          {/* Anti-Bot Honeypot Hidden Input Field */}
+          <input
+            type="text"
+            name="website_url_hp"
+            value={honeypot}
+            onChange={e => setHoneypot(e.target.value)}
+            style={{ display: 'none' }}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+          />
+
           {/* Additional Notes */}
           <div>
             <label className="text-[11px] text-slate-300 block mb-1">Observações Adicionais (opcional)</label>
@@ -543,6 +586,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               placeholder="Ex: Sem cebola em uma das pizzas, tocar a campainha..."
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
             />
+          </div>
+
+          {/* Cloudflare & Rate Limit Security Shield Badge */}
+          <div className="p-3 bg-slate-950/90 border border-emerald-500/20 rounded-xl flex items-center justify-between gap-2 text-[11px] text-slate-400">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>
+                <strong className="text-emerald-300">Blindagem Ativa:</strong> Proteção contra spam e limitação de pedidos ({securityMetrics.ordersPlacedInWindow}/{securityMetrics.maxOrdersInWindow} pedidos recentes)
+              </span>
+            </div>
+            <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-mono whitespace-nowrap bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+              <Lock className="w-3 h-3" /> SSL Cloudflare
+            </div>
           </div>
 
           {/* Submit Action */}

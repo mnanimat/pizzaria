@@ -11,7 +11,7 @@ import { OrderSuccessModal } from './components/OrderSuccessModal';
 import { CartItem, SelectedPizza, PizzaFlavor, SideItem, ComboItem, StuffedCrust, Coupon } from './types';
 import { PIZZERIA_INFO } from './data/pizzaData';
 import { formatCurrency } from './utils/whatsapp';
-import { Sparkles, Pizza, Phone, MapPin, Heart, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Pizza, Phone, MapPin, Heart, CheckCircle2, ShieldCheck, Lock } from 'lucide-react';
 
 export default function App() {
   // Theme state
@@ -275,12 +275,18 @@ export default function App() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-[11px] text-slate-500">
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <p>© 2026 {PIZZERIA_INFO.name}. Todos os direitos reservados.</p>
-              <p className="inline-flex items-center gap-1.5 font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15 px-3 py-1 rounded-full border border-amber-500/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                <span>Site fictício demonstrativo para apresentação a clientes interessados na criação de sites e sistemas web.</span>
-              </p>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <p className="inline-flex items-center gap-1.5 font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15 px-3 py-1 rounded-full border border-amber-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                  <span>Site fictício demonstrativo para apresentação a clientes interessados na criação de sites e sistemas web.</span>
+                </p>
+                <p className="inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Cloudflare Pages Shield & Proteção Anti-Spam</span>
+                </p>
+              </div>
             </div>
             <p className="flex items-center justify-center gap-1 text-slate-400">
               Desenvolvido para amantes de pizza <Heart className="w-3.5 h-3.5 text-red-500 fill-current" />
